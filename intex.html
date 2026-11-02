@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Práctica de DOM y Eventos JS</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      transition: background-color 0.4s ease;
+    }
+
+    .container {
+      background: #ffffff;
+      max-width: 600px;
+      width: 100%;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 25px;
+    }
+
+    section {
+      border-bottom: 1px solid #eee;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+
+    section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      color: #444;
+      margin-bottom: 12px;
+    }
+
+    /* Estilos Ejercicio 1 */
+    .counter-display {
+      font-size: 2.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 15px 0;
+      color: #2c3e50;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.1s ease;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .btn-increment { background-color: #2ecc71; color: white; }
+    .btn-decrement { background-color: #e74c3c; color: white; }
+    .btn-reset { background-color: #95a5a6; color: white; }
+    .btn-bg { background-color: #3498db; color: white; width: 100%; padding: 12px; }
+
+    /* Estilos Ejercicio 2 */
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+
+    .btn-submit {
+      background-color: #8e44ad;
+      color: white;
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+    }
+
+    .output-card {
+      margin-top: 15px;
+      padding: 12px;
+      background-color: #f8f9fa;
+      border-left: 4px solid #8e44ad;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <h1>Manipulación del DOM y Eventos</h1>
+
+    <!-- Ejercicio 1: Contador -->
+    <section>
+      <h2>Ejercicio 1: Contador</h2>
+      <div id="counter-value" class="counter-display">0</div>
+      <div class="btn-group">
+        <button id="btn-increment" class="btn-increment">Incrementar</button>
+        <button id="btn-decrement" class="btn-decrement">Decrementar</button>
+        <button id="btn-reset" class="btn-reset">Reiniciar</button>
+      </div>
+    </section>
+
+    <!-- Ejercicio 2: Formulario -->
+    <section>
+      <h2>Ejercicio 2: Formulario sin recarga</h2>
+      <form id="user-form">
+        <div class="form-group">
+          <label for="name">Nombre:</label>
+          <input type="text" id="name" required placeholder="Ingresa tu nombre">
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" required placeholder="ejemplo@correo.com">
+        </div>
+        <button type="submit" class="btn-submit">Enviar datos</button>
+      </form>
+      <div id="form-result" class="output-card hidden"></div>
+    </section>
+
+    <!-- Ejercicio 3: Cambiar color de fondo -->
+    <section>
+      <h2>Ejercicio 3: Color de fondo aleatorio</h2>
+      <button id="btn-change-bg" class="btn-bg">Cambiar color de fondo</button>
+    </section>
+  </main>
+
+  <script>
+    // Ejercicio 1: Lógica del Contador
+    let count = 0;
+    const counterDisplay = document.getElementById('counter-value');
+    const btnIncrement = document.getElementById('btn-increment');
+    const btnDecrement = document.getElementById('btn-decrement');
+    const btnReset = document.getElementById('btn-reset');
+
+    function updateCounter() {
+      counterDisplay.textContent = count;
+    }
+
+    btnIncrement.addEventListener('click', () => {
+      count++;
+      updateCounter();
+    });
+
+    btnDecrement.addEventListener('click', () => {
+      count--;
+      updateCounter();
+    });
+
+    btnReset.addEventListener('click', () => {
+      count = 0;
+      updateCounter();
+    });
+
+    // Ejercicio 2: Formulario sin recarga
+    const userForm = document.getElementById('user-form');
+    const formResult = document.getElementById('form-result');
+
+    userForm.addEventListener('submit', (event) => {
+      event.preventDefault(); // Evita que se recargue la página
+
+      const nameInput = document.getElementById('name').value;
+      const emailInput = document.getElementById('email').value;
+
+      formResult.innerHTML = `<p><strong>Nombre:</strong> ${nameInput}</p><p><strong>Email:</strong> ${emailInput}</p>`;
+      formResult.classList.remove('hidden');
+    });
+
+    // Ejercicio 3: Cambiar color de fondo
+    const btnChangeBg = document.getElementById('btn-change-bg');
+
+    function getRandomHexColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    btnChangeBg.addEventListener('click', () => {
+      const randomColor = getRandomHexColor();
+      document.body.style.backgroundColor = randomColor;
+    });
+  </script>
+
+</body>
+</html>
